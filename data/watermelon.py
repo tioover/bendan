@@ -18,3 +18,9 @@ def watermelon_2_0(remove_number=True):
         features.remove(number_name)
 
     return features, examples
+
+
+def watermelon_3_0_alpha():
+    csv_data = load("watermelon-3.0-alpha.csv")[1:]
+    csv_data = [[float(column) for column in row] for row in csv_data]
+    return np.array(csv_data)
