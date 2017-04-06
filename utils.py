@@ -10,8 +10,3 @@ def sigmoid(x):
 def d_sigmoid(y):
     return y*(1.0-y)
 
-
-@np.vectorize
-def dn_sigmoid(x, n):
-    for _ in range(n):
-        x = d_sigmoid(sigmoid(x))
