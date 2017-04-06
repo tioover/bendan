@@ -22,11 +22,16 @@ class NeuralNetwork:
 
     def _update(self, example):
         """ 对单个示例更新参数 """
-        sample = example[:-self.output_size][np.newaxis]  # input_size x 1
-        train = example[-self.output_size:][np.newaxis]  # output_size x 1
-        b, y = self._output(sample)  # b: 1 x hidden_size y: 1 x output_size
-        g = (train - y) * d_sigmoid(y)  # 1 x output_size 隐层 -> 输出层 参数梯度
-        e = b * (1-b) * (g @ np.transpose(self.output_wight))  # 输入层 -> 隐层 参数梯度 1 x hidden_size
+        sample = example[:-self.output_size][np.newaxis]  # 1 × input_size
+        train = example[-self.output_size:][np.newaxis]  # 1 × output_size
+        # b: 1 × hidden_size 隐层输出
+        # y: 1 × output_size 输出层输出
+        b, y = self._output(sample)
+        # g: 1 × output_size 隐层 -> 输出层 参数梯度
+        g = (train - y) * d_sigmoid(y)
+        # e: 1 × hidden_size 输入层 -> 隐层 参数梯度
+        #
+        e = b * (1-b) * (g @ np.transpose(self.output_wight))
 
         # 更新神经元参数
         self.output_wight += np.transpose(b) * g * self.eta
