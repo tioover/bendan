@@ -22,5 +22,12 @@ def watermelon_2_0(remove_number=True):
 
 def watermelon_3_0_alpha():
     csv_data = load("watermelon-3.0-alpha.csv")[1:]
-    csv_data = [[float(column) for column in row] for row in csv_data]
-    return np.array(csv_data)
+    data = []
+    for row in csv_data:
+        if row[-1] == "1":
+            label = [1.0, 0.0]
+        else:
+            label = [0.0, 1.0]
+        data.append(list(map(float, row[:-1]))+label)
+    return np.array(data)
+

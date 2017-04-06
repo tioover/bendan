@@ -10,32 +10,30 @@ class NeuralNetwork:
         self.output_size = output_size
 
         self.hidden_wight = generate_random_array(input_size, hidden_size)
-        self.hidden_threshold = generate_random_array(hidden_size)
+        self.hidden_threshold = generate_random_array(1, hidden_size)
         self.output_wight = generate_random_array(hidden_size, output_size)
-        self.output_threshold = generate_random_array(output_size)
+        self.output_threshold = generate_random_array(1, output_size)
 
     def train(self, train_set):
         for i in range(len(train_set)):
             self.update(train_set[i])
 
     def update(self, example):
-        sample = example[:-self.output_size]
+        sample = example[:-self.output_size][np.newaxis]  # input_size x 1
+        train = example[-self.output_size:][np.newaxis]  # output_size x 1
         b, y = self.output(sample)
-        g = (example[-self.output_size:] - y) * y * (1-y)
-        e = b * (1-b) * (g @ np.transpose(self.output_wight))
-        tmp = self.eta * np.transpose(b) * g
-        tmp.resize((self.hidden_size, self.output_size))
-        self.output_wight += tmp
+        g = (train - y) * y * (1-y)  # 隐层 -> 输出层 参数梯度
+        e = b * (1-b) * (g @ np.transpose(self.output_wight))  # 输入层 -> 隐层 参数梯度
+
+        # 更新神经元参数
+        self.output_wight += np.transpose(b) * g * self.eta
         self.output_threshold += -self.eta * g
-        tmp = np.transpose(sample[np.newaxis]) * e
-        self.hidden_wight += self.eta * tmp
+        self.hidden_wight += self.eta * np.transpose(sample) * e
         self.hidden_threshold += -self.eta * e
 
     def output(self, sample):
-        alpha = sample @ self.hidden_wight
-        b = sigmoid(alpha - self.hidden_threshold)
-        beta = b @ self.output_wight
-        y = sigmoid(beta - self.output_threshold)
+        b = sigmoid(sample @ self.hidden_wight - self.hidden_threshold)
+        y = sigmoid(b @ self.output_wight - self.output_threshold)
         return b, y
 
 
