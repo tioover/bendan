@@ -1,9 +1,20 @@
 import numpy as np
 from neural_networks import NeuralNetwork
-from data import watermelon_3_0_alpha
 
-data = watermelon_3_0_alpha()
-nn = NeuralNetwork(0.05, 2, 3, 2)
-idx = np.random.randint(len(data), size=7)
-train_set = data[idx]
-nn.train(train_set)
+xor = np.array(
+    [[1.0, 0.0, 1.0],
+     [0.0, 1.0, 1.0],
+     [1.0, 1.0, 0.0],
+     [0.0, 0.0, 0.0]]
+)
+
+
+def xor_network():
+    nn = NeuralNetwork(0.05, 2, 4, 1)
+    for _ in range(10000):
+        nn.train(xor)
+    return nn
+
+
+if __name__ == '__main__':
+    xor_network()
