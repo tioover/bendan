@@ -30,7 +30,7 @@ class NeuralNetwork:
         # g: 1 × output_size 隐层 -> 输出层 参数梯度
         g = (train - y) * d_sigmoid(y)
         # e: 1 × hidden_size 输入层 -> 隐层 参数梯度
-        e = b * (1-b) * (g @ np.transpose(self.output_wight))
+        e = d_sigmoid(b) * (g @ np.transpose(self.output_wight))
 
         # 更新神经元参数
         self.output_wight += np.transpose(b) * g * self.eta
